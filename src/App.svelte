@@ -200,6 +200,7 @@
   let qrInput = "";
   let qrDataUrl = "";
   let qrError = "";
+  let qrStatus = "";
   let qrRequestId = 0;
   let colorHexInput = "#2f7668";
   let colorRgb: RgbColor = { red: 47, green: 118, blue: 104 };
@@ -1047,13 +1048,20 @@
       if (requestId === qrRequestId) {
         qrDataUrl = dataUrl;
         qrError = "";
+        qrStatus = "";
       }
     } catch {
       if (requestId === qrRequestId) {
         qrDataUrl = "";
+        qrStatus = "";
         qrError = "QRコードを生成できませんでした。入力を短くして再度お試しください。";
       }
     }
+  }
+
+  async function readQrBlob() {
+    const response = await fetch(qrDataUrl);
+    return response.blob();
   }
 
   async function copyQrImage() {
@@ -1062,14 +1070,23 @@
     }
 
     try {
-      const blob = await (await fetch(qrDataUrl)).blob();
+      const ClipboardItemConstructor = window.ClipboardItem;
+      if (navigator.clipboard?.write === undefined || ClipboardItemConstructor === undefined) {
+        throw new Error("Image clipboard is not supported.");
+      }
+
+      const blob = await readQrBlob();
+      const mimeType = blob.type || "image/png";
       await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob,
+        new ClipboardItemConstructor({
+          [mimeType]: blob,
         }),
       ]);
       copiedTextKey = "qr:image";
+      qrError = "";
+      qrStatus = "QR画像をクリップボードにコピーしました。";
     } catch {
+      qrStatus = "";
       qrError = "画像としてコピーできませんでした。保存ボタンをご利用ください。";
     }
   }
@@ -1082,13 +1099,18 @@
     const link = document.createElement("a");
     link.href = qrDataUrl;
     link.download = "qr-code.png";
+    document.body.append(link);
     link.click();
+    link.remove();
+    qrError = "";
+    qrStatus = "QR画像をPNGとして保存しました。";
   }
 
   function clearQr() {
     qrInput = "";
     qrDataUrl = "";
     qrError = "";
+    qrStatus = "";
   }
 
   function applyHexColor() {
@@ -2951,7 +2973,7 @@
             </div>
             <div class="panel-actions">
               <button type="button" class="secondary-button" on:click={clearQr}>クリア</button>
-              <button type="button" class="secondary-button" disabled={qrDataUrl === ""} on:click={downloadQrCode}>保存</button>
+              <button type="button" class="secondary-button" disabled={qrDataUrl === ""} on:click={downloadQrCode}>PNG保存</button>
               <button type="button" class="primary-button" disabled={qrDataUrl === ""} on:click={copyQrImage}>
                 {copiedTextKey === "qr:image" ? "コピー済み" : "画像をコピー"}
               </button>
@@ -2975,6 +2997,9 @@
 
           {#if qrError}
             <p class="tool-message error-message" role="alert">{qrError}</p>
+          {/if}
+          {#if qrStatus}
+            <p class="notice-message" role="status">{qrStatus}</p>
           {/if}
         </section>
       {:else if activeView === "color"}
