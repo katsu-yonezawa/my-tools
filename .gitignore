@@ -2,7 +2,7 @@ node_modules/
 dist/
 target/
 src-tauri/target/
+tickets/
 
 *.log
 .DS_Store
-
