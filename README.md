@@ -2,7 +2,7 @@
 
 Tauri v2 + Vite + TypeScript + Svelte で構成した、シンプルなデスクトップアプリです。
 
-現在は、現在時刻を表示する最小画面だけを実装しています。
+現在は、メニューから複数の作業補助ツールを開く構成です。ポモドーロ、UUID、JSON、日時変換、Base64、URL、JWT、正規表現、文字数、ハッシュ、Diff、QR、色変換、メモ、Bedrock 連携の AI チャットを実装しています。
 
 ## Development
 
@@ -84,5 +84,4 @@ Windows で一般配布する場合は、コード署名証明書でインスト
 - [技術要素ドキュメント](docs/technical-stack.md)
 - [新人向けプロジェクト歩き方](docs/project-walkthrough.md)
 - [Tauri とこのプロジェクトのメンタルモデル](docs/tauri-mental-model.md)
-- [機能アイデアメモ](docs/feature-ideas.md)
 - [メニューアイコン画像生成ルール](docs/menu-icon-image-generation.md)
