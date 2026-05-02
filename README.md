@@ -85,3 +85,4 @@ Windows で一般配布する場合は、コード署名証明書でインスト
 - [新人向けプロジェクト歩き方](docs/project-walkthrough.md)
 - [Tauri とこのプロジェクトのメンタルモデル](docs/tauri-mental-model.md)
 - [機能アイデアメモ](docs/feature-ideas.md)
+- [メニューアイコン画像生成ルール](docs/menu-icon-image-generation.md)
